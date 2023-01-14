@@ -106,6 +106,6 @@ setImmediate(getWeather);
 setInterval(getWeather, 30*60000)
 
 // Create an HTTP server and listen for requests on port 3000
-app.listen(3000, () => {
-    console.log("Twilio listening for incoming calls on port 3000");
+app.listen(config.port, () => {
+    console.log(`Twilio listening for incoming calls on port ${config.port}`);
 });
