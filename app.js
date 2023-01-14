@@ -5,6 +5,8 @@ const urlencoded = require('body-parser').urlencoded;
 const axios = require("axios");
 const app = express();
 
+const pm2 = require("@pm2/io");
+
 const config = require("./config.json");
 var weather = null;
 
@@ -33,6 +35,11 @@ const dayTable = [
     'Saturday'
 ]
 
+const totalCalls = pm2.counter({
+    name: "Total Calls since Server Reboot",
+    id: "app/callcount",
+});
+
 // Parse incoming POST params with Express middleware
 app.use(urlencoded({ extended: false }));
 
@@ -40,6 +47,7 @@ app.use(urlencoded({ extended: false }));
 // HTTP POST to /voice in our application
 app.post('/voice', async (request, response) => {
     console.log(`Incoming call: ${request.body.From}`);
+    totalCalls.inc();
     if (!weather) weather = await getWeather();
 
     const time = new Date(Date.now());
