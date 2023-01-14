@@ -40,6 +40,12 @@ const totalCalls = pm2.counter({
     id: "app/callcount",
 });
 
+pm2.action("app:update", (cb) => {
+    const child_process = require("child_process");
+    var output = child_process.execSync("git pull");
+    return cb(output);
+});
+
 process.env.TZ = "America/Chicago";
 
 // Parse incoming POST params with Express middleware
