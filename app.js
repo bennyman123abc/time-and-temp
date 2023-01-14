@@ -40,6 +40,8 @@ const totalCalls = pm2.counter({
     id: "app/callcount",
 });
 
+process.env.TZ = "America/Chicago";
+
 // Parse incoming POST params with Express middleware
 app.use(urlencoded({ extended: false }));
 
@@ -50,7 +52,7 @@ app.post('/voice', async (request, response) => {
     totalCalls.inc();
     if (!weather) weather = await getWeather();
 
-    const time = new Date(Date.now());
+    const time = new Date(Date.parse(new Date().toLocaleString()));
     const month = monthTable[time.getMonth()];
     var hour = time.getHours() ; // gives the value in 24 hours format
     var AmOrPm = hour >= 12 ? 'P M' : 'A M';
