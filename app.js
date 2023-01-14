@@ -77,7 +77,7 @@ app.post('/voice', async (request, response) => {
     twiml.say({ voice: "woman" }, `The current time is ${hour}, ${minute}, ${AmOrPm} on ${day}, ${month} ${date}, ${year}.`);
     twiml.pause({ length: 1 });
     if (weather) {
-        twiml.say({ voice: "woman" }, `The temperature is currently ${weather.temperature} ${weather.temperature !== 1 ? ",degrees" : ",degree"} fahrenheit with, ${weather.raining ? "precipitation" : "no precipitation"}.`);
+        twiml.say({ voice: "woman" }, `The temperature is currently ${weather.temperature} ${weather.temperature !== 1 ? ",degrees" : ",degree"}, fahrenheit with, ${weather.raining ? "precipitation" : "no precipitation"}.`);
     } else {
         twiml.say({ voice: "woman" }, "We're sorry. We were unable to obtain the current weather for the area. Please try calling back again later.");
     }
