@@ -1,0 +1,11 @@
+{
+  "name": "time-and-temp",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "twilio": "^3.84.1"
+  }
+}

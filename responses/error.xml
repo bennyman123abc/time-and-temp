@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Say voice="alice">Thank you for calling.</Say>
+    <Pause length="1"/>
+    <Say>This system has experienced an internal error. Please try calling again later. Sorry for the inconvenience.</Say>
+</Response>
