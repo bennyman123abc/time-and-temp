@@ -78,7 +78,7 @@ app.post('/voice', async (request, response) => {
     twiml.say({ voice: "woman" }, `The current time is ${hour}, ${formatMinute(minute)}, ${AmOrPm} on ${day}, ${month} ${date}, ${year}.`);
     twiml.pause({ length: 1 });
     if (weather) {
-        twiml.say({ voice: "woman" }, `The temperature is currently ${temperatureFormat(weather.temperature)}. The temperature feels like it is ${temperatureFormat(weather.feels_like)}`);
+        twiml.say({ voice: "woman" }, `The temperature is currently ${temperatureFormat(weather.temperature)}. The temperature feels like ${temperatureFormat(weather.feels_like)}.`);
         twiml.pause({ length: 1 });
         twiml.say({ voice: "woman" }, `The forecasted high temperature for today is ${temperatureFormat(weather.high)}, with a low of ${temperatureFormat(weather.low)}.`)
     } else {
