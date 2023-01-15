@@ -135,7 +135,7 @@ const getWeather = async function() {
     //TODO finish adding forecast data to the weather object :D
 
     weather = {
-        temperature: res.data.current.temp_f,
+        temperature: Math.round(res.data.current.temp_f),
         raining: res.data.current.precip_mm > 0,
     }
 
