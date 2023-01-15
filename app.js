@@ -75,10 +75,12 @@ app.post('/voice', async (request, response) => {
     const twiml = new VoiceResponse();
     twiml.say({ voice: 'woman' }, `Thank you for calling Alton Time and Temperature.`);
     twiml.pause({ length: 1 });
-    twiml.say({ voice: "woman" }, `The current time is ${hour}:${minute}, ${AmOrPm} on ${day}, ${month} ${date}, ${year}.`);
+    twiml.say({ voice: "woman" }, `The current time is ${hour}, ${formatMinute(minute)}, ${AmOrPm} on ${day}, ${month} ${date}, ${year}.`);
     twiml.pause({ length: 1 });
     if (weather) {
-        twiml.say({ voice: "woman" }, `The temperature is currently ${weather.temperature} ${weather.temperature !== 1 ? ",degrees" : ",degree"}, fahrenheit with, ${weather.raining ? "precipitation" : "no precipitation"}.`);
+        twiml.say({ voice: "woman" }, `The temperature is currently ${temperatureFormat(weather.temperature)}. The temperature feels like it is ${temperatureFormat(weather.feels_like)}`);
+        twiml.pause({ length: 1 });
+        twiml.say({ voice: "woman" }, `The forecasted high temperature for today is ${temperatureFormat(weather.high)}, with a low of ${temperatureFormat(weather.low)}.`)
     } else {
         twiml.say({ voice: "woman" }, "We're sorry. We were unable to obtain the current weather for the area. Please try calling back again later.");
     }
@@ -137,9 +139,26 @@ const getWeather = async function() {
     weather = {
         temperature: Math.round(res.data.current.temp_f),
         raining: res.data.current.precip_mm > 0,
+        feels_like: Math.round(res.data.current.feelslike_f),
+        high: Math.round(res.data.forecast.forecastday[0].day.maxtemp_f),
+        low: Math.round(res.data.forecast.forecastday[0].day.mintemp_f)
     }
 
-    // console.log(res.data.forecast.forecastday[0].day);
+    console.log(weather);
+}
+
+const temperatureFormat = function(temp) {
+    return `${temp} ${temp !== 1 ? ",degrees" : ",degree"}, fahrenheit`
+}
+
+const formatMinute = function(minute) {
+    if (minute == 0) {
+        return "o'clock"
+    } else if (minute < 10) {
+        return `o' ${minute}`
+    } else {
+        return minute
+    }
 }
 
 setImmediate(getWeather);
