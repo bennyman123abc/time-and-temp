@@ -8,6 +8,7 @@ const app = express();
 const pm2 = require("@pm2/io");
 
 const config = require("./config.json");
+
 var weather = null;
 
 const monthTable = [
@@ -74,7 +75,7 @@ app.post('/voice', async (request, response) => {
     const twiml = new VoiceResponse();
     twiml.say({ voice: 'woman' }, `Thank you for calling Alton Time and Temperature.`);
     twiml.pause({ length: 1 });
-    twiml.say({ voice: "woman" }, `The current time is ${hour}, ${minute}, ${AmOrPm} on ${day}, ${month} ${date}, ${year}.`);
+    twiml.say({ voice: "woman" }, `The current time is ${hour}:${minute}, ${AmOrPm} on ${day}, ${month} ${date}, ${year}.`);
     twiml.pause({ length: 1 });
     if (weather) {
         twiml.say({ voice: "woman" }, `The temperature is currently ${weather.temperature} ${weather.temperature !== 1 ? ",degrees" : ",degree"}, fahrenheit with, ${weather.raining ? "precipitation" : "no precipitation"}.`);
@@ -99,28 +100,50 @@ const nth = function(d) {
     }
 }
 
+// Accuweather
+// const getWeather = async function() {
+//     const url = `http://dataservice.accuweather.com/currentconditions/v1/${config.location_key}?apikey=${config.accuweather_key}`;
+//     const res = await axios.get(url);
+
+//     if (res.status !== 200) {
+//         console.log(`Failed to get weather: ${res.status} ${res.statusText}`);
+//         return null;
+//     }
+
+//     // console.log(res.data[0].Temperature);
+
+//     // console.log(`Current Weather: Temperature: ${res.data[0].Temperature.Imperial.Value}, Raining?: ${res.data[0].HasPrecipitation}`);
+
+//     weather = {
+//         temperature: res.data[0].Temperature.Imperial.Value,
+//         raining: res.data[0].HasPrecipitation
+//     }
+
+//     console.log(weather)
+// }
+
+// OpenWeatherAPI
 const getWeather = async function() {
-    const url = `http://dataservice.accuweather.com/currentconditions/v1/${config.location_key}?apikey=${config.accuweather_key}`;
+    const url = `http://api.weatherapi.com/v1/forecast.json?key=${config.openweatherapi_key}&q=${config.zip_code}&days=1`
     const res = await axios.get(url);
 
     if (res.status !== 200) {
-        console.log(`Failed to get weather: ${res.status} ${res.statusText}`);
-        return null;
+        console.error(`Failed to get weather: ${res.status} ${res.statusText}`);
+        weather = null;
     }
 
-    // console.log(res.data[0].Temperature);
-
-    // console.log(`Current Weather: Temperature: ${res.data[0].Temperature.Imperial.Value}, Raining?: ${res.data[0].HasPrecipitation}`);
+    //TODO finish adding forecast data to the weather object :D
 
     weather = {
-        temperature: res.data[0].Temperature.Imperial.Value,
-        raining: res.data[0].HasPrecipitation
+        temperature: res.data.current.temp_f,
+        raining: res.data.current.precip_mm > 0,
     }
 
-    console.log(weather)
+    // console.log(res.data.forecast.forecastday[0].day);
 }
 
 setImmediate(getWeather);
+
 setInterval(getWeather, 30*60000)
 
 // Create an HTTP server and listen for requests on port 3000
